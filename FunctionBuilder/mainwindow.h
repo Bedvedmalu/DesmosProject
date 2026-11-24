@@ -30,6 +30,7 @@ private:
     void removeFunctionRow(QWidget* row);
     void rebuildSliders(int id, QVBoxLayout* layout);
     void showSettings();
+    bool loadGraphs(const QString& path, QWidget* errorParent);
 
     Ui::MainWindow* ui;
     QPointer<QWidget> draggedRow;

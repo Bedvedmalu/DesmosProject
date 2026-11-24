@@ -4,6 +4,12 @@
 
 #include <QColorDialog>
 #include <QFileDialog>
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QFileInfo>
+#include <QMimeData>
+#include <QTimer>
+#include <QUrl>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
@@ -20,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     ui->graphCanvas->setRepository(&repository);
+    ui->graphCanvas->setAcceptDrops(true);
+    ui->graphCanvas->installEventFilter(this);
     ui->functionsLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
     connect(ui->deleteButton, &QToolButton::clicked, this, [this] {
         const int lastRow = ui->functionsLayout->count() - 2;
@@ -208,7 +216,41 @@ void MainWindow::removeFunctionRow(QWidget* row)
     ui->graphCanvas->requestRedraw();
 }
 
+static QString droppedJsonPath(const QMimeData* mime)
+{
+    const auto urls = mime->urls();
+    if (urls.size() != 1 || !urls.first().isLocalFile())
+        return {};
+    const QString path = urls.first().toLocalFile();
+    const QFileInfo file(path);
+    if (!file.isFile() || file.suffix().compare("json", Qt::CaseInsensitive) != 0)
+        return {};
+    return path;
+}
+
 bool MainWindow::eventFilter(QObject *watched, QEvent *event) {
+    if ((watched == ui->graphCanvas || watched->objectName() == "jsonDropArea")
+        && (event->type() == QEvent::DragEnter || event->type() == QEvent::Drop)) {
+        auto* drop = static_cast<QDropEvent*>(event);
+        const QString path = droppedJsonPath(drop->mimeData());
+        if (path.isEmpty() || !(drop->possibleActions() & Qt::CopyAction)) {
+            drop->ignore();
+            return true;
+        }
+        drop->setDropAction(Qt::CopyAction);
+        drop->accept();
+        if (event->type() == QEvent::Drop) {
+            auto* target = static_cast<QWidget*>(watched);
+            // Finish the native drag operation before opening or closing dialogs.
+            QTimer::singleShot(0, target, [this, target, path] {
+                auto* dialog = qobject_cast<QDialog*>(target->window());
+                if (loadGraphs(path, target->window()) && dialog)
+                    dialog->accept();
+            });
+        }
+        return true;
+    }
+
     auto *handle = qobject_cast<QToolButton *>(watched);
 
     if (!handle || handle->objectName() != "functionDrag") {
@@ -331,6 +373,7 @@ void MainWindow::showSettings()
     QDialog dialog(this);
     Ui::SettingsDialog form;
     form.setupUi(&dialog);
+    form.jsonDropArea->installEventFilter(this);
     const QString filter = tr("Файлы JSON (*.json)");
     connect(form.saveButton, &QPushButton::clicked, &dialog, [this, &dialog, filter] {
         QFileDialog picker(&dialog, tr("Сохранить графики"), QString(), filter);
@@ -348,27 +391,31 @@ void MainWindow::showSettings()
     });
     connect(form.loadButton, &QPushButton::clicked, &dialog, [this, &dialog, filter] {
         const QString path = QFileDialog::getOpenFileName(&dialog, tr("Загрузить графики"), {}, filter);
-        if (path.isEmpty())
-            return;
-        QString error;
-        if (!repository.loadFile(path, error)) {
-            QMessageBox::warning(&dialog, tr("Ошибка загрузки"), error);
-            return;
-        }
-
-        // The spacer is always the last item.
-        while (ui->functionsLayout->count() > 1) {
-            auto* item = ui->functionsLayout->takeAt(0);
-            delete item->widget();
-            delete item;
-        }
-        ui->deleteButton->setEnabled(false);
-        ui->graphCanvas->clearSelection();
-        for (const auto& f : repository.getRepository())
-            createFunctionRow(f.getId());
-        nextFunctionId = static_cast<int>(repository.getRepository().size());
-        ui->graphCanvas->requestRedraw();
-        dialog.accept();
+        if (!path.isEmpty() && loadGraphs(path, &dialog))
+            dialog.accept();
     });
     dialog.exec();
+}
+
+bool MainWindow::loadGraphs(const QString& path, QWidget* errorParent)
+{
+    QString error;
+    if (!repository.loadFile(path, error)) {
+        QMessageBox::warning(errorParent, tr("Ошибка загрузки"), error);
+        return false;
+    }
+
+    // The spacer is always the last item.
+    while (ui->functionsLayout->count() > 1) {
+        auto* item = ui->functionsLayout->takeAt(0);
+        delete item->widget();
+        delete item;
+    }
+    ui->deleteButton->setEnabled(false);
+    ui->graphCanvas->clearSelection();
+    for (const auto& f : repository.getRepository())
+        createFunctionRow(f.getId());
+    nextFunctionId = static_cast<int>(repository.getRepository().size());
+    ui->graphCanvas->requestRedraw();
+    return true;
 }

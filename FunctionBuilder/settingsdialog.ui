@@ -7,6 +7,7 @@
   <property name="styleSheet"><string notr="true">
 QDialog { background: #1E2530; }
 QLabel { color: #F1F5F9; font-size: 16px; font-weight: bold; }
+QLabel#jsonDropArea { color: #CBD5E1; font-size: 14px; font-weight: normal; border: 1px dashed #8295AB; border-radius: 6px; padding: 14px; }
 QPushButton { background: #303A49; color: #F1F5F9; border: 1px solid #465367; border-radius: 6px; padding: 8px 14px; }
 QPushButton:hover, QPushButton:focus { border-color: #5491F8; background: #354358; }
   </string></property>
@@ -19,6 +20,14 @@ QPushButton:hover, QPushButton:focus { border-color: #5491F8; background: #35435
    <item><widget class="QLabel" name="heading"><property name="text"><string>Файл графиков</string></property></widget></item>
    <item><widget class="QPushButton" name="saveButton"><property name="text"><string>Сохранить в JSON…</string></property></widget></item>
    <item><widget class="QPushButton" name="loadButton"><property name="text"><string>Загрузить из JSON…</string></property></widget></item>
+   <item>
+    <widget class="QLabel" name="jsonDropArea">
+     <property name="acceptDrops"><bool>true</bool></property>
+     <property name="alignment"><set>Qt::AlignCenter</set></property>
+     <property name="wordWrap"><bool>true</bool></property>
+     <property name="text"><string>Перетащите сюда один файл .json</string></property>
+    </widget>
+   </item>
    <item><widget class="QPushButton" name="closeButton"><property name="text"><string>Закрыть</string></property></widget></item>
   </layout>
  </widget>
