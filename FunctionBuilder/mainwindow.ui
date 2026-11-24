@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1178</width>
+    <height>798</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Graphing Calculator</string>
+  </property>
+  <property name="styleSheet">
+   <string>/* Graphing Calculator — dark Qt Widgets form */
+QMainWindow { background: #171C24; color: #F1F5F9; }
+QWidget#centralwidget { background: #171C24; }
+QWidget#functionPanel { background: #1E2530; border: none; }
+QLabel#label { background: transparent; color: #F1F5F9; font-size: 18px; font-weight: 700; }
+QToolBar { background: #252D39; border: 0; border-bottom: 1px solid #394454; padding: 7px; spacing: 8px; }
+QToolBar QToolButton { background: transparent; color: #F1F5F9; padding: 8px 11px; border: 0; border-radius: 6px; font-size: 13px; }
+QToolBar QToolButton:hover { background: #364254; }
+QToolBar QToolButton:pressed { background: #3478F6; }
+QToolBar::separator { background: #465367; width: 1px; margin: 5px 8px; }
+QToolButton#addButton, QToolButton#deleteButton { background: #303A49; color: #F1F5F9; border: 1px solid #465367; border-radius: 6px; padding: 5px; min-width: 24px; min-height: 24px; }
+QToolButton#addButton:hover { background: #3478F6; border-color: #3478F6; }
+QToolButton#deleteButton:hover { background: #B83B4B; border-color: #B83B4B; }
+QScrollArea#scrollArea, QWidget#scrollAreaWidgetContents { background: #1E2530; border: none; }
+QFrame[functionRow=&quot;true&quot;] { background: #2B3442; border: 1px solid #394454; border-radius: 8px; }
+QFrame[functionRow=&quot;true&quot;] QLabel { color: #94A3B8; background: transparent; border: none; }
+QFrame[functionRow=&quot;true&quot;] QLineEdit { background: #19212C; color: #F1F5F9; border: 1px solid #465367; border-radius: 5px; padding: 7px; font-size: 14px; }
+QFrame[functionRow=&quot;true&quot;] QLineEdit:focus { border-color: #3478F6; }
+QFrame[functionRow=&quot;true&quot;] QCheckBox { background: transparent; border: none; }
+QFrame[functionRow=&quot;true&quot;] QToolButton { color: #F1F5F9; background: transparent; border: none; border-radius: 5px; font-size: 18px; }
+QFrame[functionRow=&quot;true&quot;] QToolButton:hover { background: #B83B4B; }
+QScrollBar:vertical { background: #1E2530; width: 9px; border: none; margin: 0; }
+QScrollBar::handle:vertical { background: #465367; min-height: 24px; border-radius: 4px; }
+QScrollBar::handle:vertical:hover { background: #64748B; }
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0; border: none; }
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical { background: none; }
+QSplitter::handle:horizontal { background: #394454; width: 5px; }
+QSplitter::handle:horizontal:hover { background: #3478F6; }
+QWidget#graphCanvas { background: #111923; border: none; }
+QWidget#bottomBar { background: #252D39; border-top: 1px solid #394454; }
+QWidget#bottomBar QLabel { background: transparent; color: #DCE4EF; border: none; font-size: 12px; }
+QMenuBar { background: #252D39; color: #F1F5F9; }
+QMenuBar::item:selected { background: #364254; }
+QStatusBar { background: #252D39; color: #F1F5F9; }</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QSplitter" name="splitter">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Orientation::Horizontal</enum>
+      </property>
+      <property name="opaqueResize">
+       <bool>true</bool>
+      </property>
+      <property name="childrenCollapsible">
+       <bool>false</bool>
+      </property>
+      <widget class="QWidget" name="functionPanel" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>320</width>
+         <height>0</height>
+        </size>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <property name="spacing">
+         <number>10</number>
+        </property>
+        <property name="leftMargin">
+         <number>12</number>
+        </property>
+        <property name="topMargin">
+         <number>12</number>
+        </property>
+        <property name="rightMargin">
+         <number>12</number>
+        </property>
+        <property name="bottomMargin">
+         <number>12</number>
+        </property>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Функции</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>148</width>
+              <height>35</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QToolButton" name="addButton">
+            <property name="text">
+             <string>+</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="deleteButton">
+            <property name="enabled"><bool>false</bool></property>
+            <property name="toolTip"><string>Удалить последнюю карточку</string></property>
+            <property name="text">
+             <string>×</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QScrollArea" name="scrollArea">
+          <property name="frameShape">
+           <enum>QFrame::Shape::NoFrame</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>296</width>
+             <height>610</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">
+/* Карточка функции */
+QFrame#functionRow {
+    background-color: #2B3039;
+    border: 1px solid #343D49;
+    border-radius: 9px;
+}
+
+QFrame#functionRow:hover {
+    border-color: #455162;
+}
+
+QFrame#functionRow QLabel { color: #CBD5E1; background: transparent; border: none; }
+
+/* Шесть точек */
+QToolButton#functionDrag {
+    background: transparent;
+    border: none;
+    padding: 0px;
+}
+
+/* Галочка видимости */
+QToolButton#functionVisibility {
+    background-color: #202936;
+    color: transparent;
+    border: 1px solid #46546A;
+    border-radius: 6px;
+    font-size: 19px;
+    font-weight: bold;
+    padding: 0px;
+}
+
+QToolButton#functionVisibility:checked {
+    background-color: #2D83F5;
+    border: 1px solid #2879E5;
+    color: white;
+}
+
+/* Поле ввода выражения */
+QLineEdit#functionExpression {
+    background-color: #191F28;
+    color: #E9EDF4;
+    border: 2px solid #424F60;
+    border-radius: 7px;
+    padding: 4px 11px;
+    font-family: &quot;Segoe UI&quot;;
+    font-size: 16px;
+    selection-background-color: #347BF5;
+}
+
+QLineEdit#functionExpression:focus {
+    border-color: #64748B;
+}
+
+/* Кнопка удаления */
+QToolButton#functionRemove {
+    background: transparent;
+    color: #C8CDD5;
+    border: none;
+    font-family: &quot;Segoe UI&quot;;
+    font-size: 27px;
+    padding: 0px;
+}
+
+QToolButton#functionRemove:hover {
+    color: #F05262;
+}
+</string>
+           </property>
+           <layout class="QVBoxLayout" name="functionsLayout">
+            <property name="spacing">
+             <number>8</number>
+            </property>
+            <property name="leftMargin">
+             <number>3</number>
+            </property>
+            <property name="topMargin">
+             <number>6</number>
+            </property>
+            <property name="rightMargin">
+             <number>3</number>
+            </property>
+            <property name="bottomMargin">
+             <number>6</number>
+            </property>
+            <item>
+             <spacer name="functionsBottomSpacer">
+              <property name="orientation">
+               <enum>Qt::Orientation::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="GraphCanvas" name="graphCanvas" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>3</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>440</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1178</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionAddFunction"/>
+   <addaction name="separator"/>
+   <addaction name="actionResetScale"/>
+   <addaction name="separator"/>
+   <addaction name="actionSettings"/>
+  </widget>
+  <action name="actionAddFunction">
+   <property name="icon">
+    <iconset theme="list-add"/>
+   </property>
+   <property name="text">
+    <string>Добавить функцию</string>
+   </property>
+   <property name="font">
+    <font/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionResetScale">
+   <property name="icon">
+    <iconset theme="view-refresh"/>
+   </property>
+   <property name="text">
+    <string>Сбросить масштаб</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="icon">
+    <iconset theme="document-properties"/>
+   </property>
+   <property name="text">
+    <string>Параметры</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GraphCanvas</class>
+   <extends>QWidget</extends>
+   <header>graphcanvas.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
