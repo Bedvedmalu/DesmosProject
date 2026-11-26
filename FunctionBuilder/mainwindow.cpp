@@ -42,6 +42,13 @@ MainWindow::MainWindow(QWidget *parent)
         statusBar()->showMessage(QString("X: %1 | Y: %2").arg(x, 0, 'f', 2).arg(y, 0, 'f', 2));
     });
     connect(ui->actionAddFunction, &QAction::triggered, this, &MainWindow::addFunctionRow);
+
+    animationTimer.setInterval(16);
+    connect(&animationTimer, &QTimer::timeout, this, [this] {
+        const double currentTime = accumulatedTime + elapsedTimer.elapsed() / 1000.0;
+        repository.setTime(currentTime);
+        ui->graphCanvas->requestRedraw();
+    });
 }
 
 MainWindow::~MainWindow()
@@ -128,8 +135,10 @@ void MainWindow::createFunctionRow(int id)
                 if (auto* f = repository.getFunctionById(id))
                     f->setVisibility(checked);
 
+                updateAnimationState();
                 ui->graphCanvas->requestRedraw();
             });
+
 
     QToolButton *colorButton = new QToolButton(row);
     colorButton->setObjectName("functionColor");
@@ -185,8 +194,10 @@ void MainWindow::createFunctionRow(int id)
                 f->setExpression(text);
                 expressionEdit->setToolTip(f->getError());
                 rebuildSliders(id, sliders);
+                updateAnimationState();
                 ui->graphCanvas->requestRedraw();
             });
+
 
     QToolButton *removeButton = new QToolButton(row);
     removeButton->setObjectName("functionRemove");
@@ -213,6 +224,7 @@ void MainWindow::removeFunctionRow(QWidget* row)
     ui->deleteButton->setEnabled(ui->functionsLayout->count() > 1);
     row->hide();
     row->deleteLater();
+    updateAnimationState(); // <-- Добавить
     ui->graphCanvas->requestRedraw();
 }
 
@@ -241,7 +253,6 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event) {
         drop->accept();
         if (event->type() == QEvent::Drop) {
             auto* target = static_cast<QWidget*>(watched);
-            // Finish the native drag operation before opening or closing dialogs.
             QTimer::singleShot(0, target, [this, target, path] {
                 auto* dialog = qobject_cast<QDialog*>(target->window());
                 if (loadGraphs(path, target->window()) && dialog)
@@ -405,7 +416,6 @@ bool MainWindow::loadGraphs(const QString& path, QWidget* errorParent)
         return false;
     }
 
-    // The spacer is always the last item.
     while (ui->functionsLayout->count() > 1) {
         auto* item = ui->functionsLayout->takeAt(0);
         delete item->widget();
@@ -416,6 +426,21 @@ bool MainWindow::loadGraphs(const QString& path, QWidget* errorParent)
     for (const auto& f : repository.getRepository())
         createFunctionRow(f.getId());
     nextFunctionId = static_cast<int>(repository.getRepository().size());
+    accumulatedTime = 0.0;
+    elapsedTimer.restart();
+    updateAnimationState();
     ui->graphCanvas->requestRedraw();
     return true;
+}
+
+void MainWindow::updateAnimationState()
+{
+    const bool shouldRun = !isAnimationPaused && repository.hasTimeDependentFunctions();
+    if (shouldRun && !animationTimer.isActive()) {
+        elapsedTimer.start();
+        animationTimer.start();
+    } else if (!shouldRun && animationTimer.isActive()) {
+        accumulatedTime += elapsedTimer.elapsed() / 1000.0;
+        animationTimer.stop();
+    }
 }

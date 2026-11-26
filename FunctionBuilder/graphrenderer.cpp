@@ -151,7 +151,6 @@ QPainterPath GraphRenderer::functionPath(GraphFunction& function, const Viewport
         }
         bool continuous = hasPrevious;
         if (continuous && std::abs(point.y() - previous.y()) > std::max(12.0, height * 0.05)) {
-            // Keep steep straight lines, but break jumps across poles such as tan(x).
             double midX = viewport.screenToWorld({px - 1.0, 0}).x();
             double midY = viewport.worldToScreen({midX, function.evaluate(midX)}).y();
             continuous = std::isfinite(midY)

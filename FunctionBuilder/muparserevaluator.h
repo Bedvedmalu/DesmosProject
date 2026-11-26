@@ -34,6 +34,8 @@ public:
     bool setParameterValue(char name, double value);
     std::map<char, FunctionParameter> getParameters() const;
 
+    void setTime(double timeValue);
+    bool usesTime() const { return hasTime; };
     bool isValid() const { return valid; }
     const std::string& getError() const { return errorMessage; }
 
@@ -41,6 +43,8 @@ private:
     std::map<char, FunctionParameter> parameters;
     std::set<char> activeParameters;
     double x = 0.0;
+    double t = 0.0;
+    bool hasTime = false;
     mu::Parser parser;
     bool valid = false;
     std::string errorMessage;

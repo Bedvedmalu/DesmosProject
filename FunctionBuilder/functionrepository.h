@@ -16,6 +16,8 @@ public:
     bool saveFile(const QString& fileName, QString& error) const;
     bool loadFile(const QString& fileName, QString& error);
 
+    void setTime(double t);
+    bool hasTimeDependentFunctions() const;
 private:
     std::vector<GraphFunction> functions;
 };

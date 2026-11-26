@@ -7,9 +7,13 @@
 MuParserEvaluator::MuParserEvaluator()
 {
     parser.DefineVar("x", &x);
+    parser.DefineVar("t", &t);
     parser.DefineConst("pi", std::acos(-1.0));
 }
 
+void MuParserEvaluator::setTime(double timeValue) {
+    t = timeValue;
+}
 bool MuParserEvaluator::setExpression(const std::string& expression)
 {
     valid = false;
@@ -35,6 +39,10 @@ bool MuParserEvaluator::setExpression(const std::string& expression)
             const auto& name = entry.first;
             if (name == "x")
                 continue;
+            if (name == "t") {
+                hasTime = true;
+                continue;
+            }
             if (name.size() != 1 || !((name[0] >= 'a' && name[0] <= 'z')
                                       || (name[0] >= 'A' && name[0] <= 'Z'))) {
                 errorMessage = "Имя параметра должно состоять из одной латинской буквы.";

@@ -100,3 +100,13 @@ QString GraphFunction::getError() const {
         evaluator->getError()
         );
 }
+
+void GraphFunction::setTime(double t) {
+    if  (evaluator) {
+        evaluator->setTime(t);
+    }
+}
+
+bool GraphFunction::usesTime() const {
+    return evaluator ? evaluator->usesTime() : false;
+}

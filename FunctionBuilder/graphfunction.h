@@ -26,6 +26,9 @@ public:
     bool setExpression(QString expr);
     const QString& getExpression() const;
 
+    void setTime(double t);
+    bool usesTime() const;
+
     void setColor(QColor new_color);
     QColor getColor() const;
 

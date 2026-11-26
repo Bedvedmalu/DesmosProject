@@ -4,7 +4,9 @@
 #include "functionrepository.h"
 
 #include <QMainWindow>
+#include <QElapsedTimer>
 #include <QPointer>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -31,11 +33,17 @@ private:
     void rebuildSliders(int id, QVBoxLayout* layout);
     void showSettings();
     bool loadGraphs(const QString& path, QWidget* errorParent);
+     void updateAnimationState();
 
     Ui::MainWindow* ui;
     QPointer<QWidget> draggedRow;
     int nextFunctionId = 0;
     FunctionRepository repository;
+
+    QTimer animationTimer;
+    QElapsedTimer elapsedTimer;
+    double accumulatedTime = 0.0;
+    bool isAnimationPaused = false;
 };
 
 #endif

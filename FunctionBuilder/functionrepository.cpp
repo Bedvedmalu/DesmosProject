@@ -16,30 +16,41 @@ void FunctionRepository::addFunction(GraphFunction function)
 
 void FunctionRepository::deleteFunctionById(int id)
 {
-    auto it = std::find_if(functions.begin(), functions.end(),
-                           [id](const GraphFunction& f) { return f.getId() == id; });
-    if (it != functions.end())
+    auto it = functions.end();
+    for (auto current = functions.begin(); current != functions.end(); ++current) {
+        if (current->getId() == id) {
+            it = current;
+            break;
+        }
+    }
+    if (it != functions.end()) {
         functions.erase(it);
+    }
 }
 
 GraphFunction* FunctionRepository::getFunctionById(int id)
 {
-    for (auto& function : functions)
-        if (function.getId() == id)
+    for (auto& function : functions) {
+        if (function.getId() == id) {
             return &function;
+        }
+    }
     return nullptr;
 }
 
 void FunctionRepository::moveFunction(int oldIndex, int newIndex)
 {
-    const int count = static_cast<int>(functions.size());
-    if (oldIndex < 0 || newIndex < 0 || oldIndex >= count || newIndex >= count || oldIndex == newIndex)
+    const int count = functions.size();
+    if (oldIndex < 0 || newIndex < 0 || oldIndex >= count || newIndex >= count || oldIndex == newIndex) {
         return;
+    }
     auto first = functions.begin();
-    if (oldIndex < newIndex)
+    if (oldIndex < newIndex) {
         std::rotate(first + oldIndex, first + oldIndex + 1, first + newIndex + 1);
-    else
+    }
+    else {
         std::rotate(first + newIndex, first + oldIndex, first + oldIndex + 1);
+    }
 }
 
 bool FunctionRepository::saveFile(const QString& fileName, QString& error) const
@@ -132,4 +143,14 @@ bool FunctionRepository::loadFile(const QString& fileName, QString& error)
     }
     functions.swap(loaded);
     return true;
+}
+
+void FunctionRepository::setTime(double t) {
+    for (auto& f : functions) {
+        f.setTime(t);
+    }
+}
+
+bool FunctionRepository::hasTimeDependentFunctions() const {
+    return std::any_of(functions.begin(), functions.end(), [](const GraphFunction& f) {return f.isVisible() && f.isValid() && f.usesTime(); });
 }
